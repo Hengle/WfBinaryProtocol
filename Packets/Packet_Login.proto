@@ -1,0 +1,63 @@
+syntax = "proto3";
+package rpc;
+
+enum emLoginResult 
+{
+	emLoginResult_OK = 0;
+	emLoginResult_Failed = 1;
+	emLoginResult_Timeout = 2;
+	emLoginResult_None = 0xff;
+}
+enum emPacket_Login {
+	EM_CS_Login				= 0x101;	//登陆
+	EM_SC_LoginRst			= 0x102; 	//登陆结果
+	
+	EM_CS_Register			= 0x103;	//注册
+	EM_SC_RegisterRst		= 0x104; 	//注册结果
+	
+	EM_CS_LoginGateWay		= 0x105;	//登陆网关服务器
+	EM_SC_LoginGateWayRst	= 0x106; 	//登陆网关服务器结果
+	em_SC_PlayerInfo        = 0x107;    //玩家基本信息
+}
+
+//登陆
+message CS_Login {
+	int32 m_type = 1;		//登录平台
+	string m_account = 2;	//账号
+	string m_pwd = 3;		//密码
+	string m_equipment = 4;	//登陆系统（android，ios等）
+	string m_machine = 5;	//机器码
+}
+
+//登陆结果
+message SC_LoginRst
+{
+	int32 m_rst = 1;			//是否成功 0成功
+	string m_sessionid = 2;	//回话id
+}
+
+message CS_Register {
+	string m_account = 1;	//账号
+	string m_pwd = 2;		//密码
+}
+
+message SC_RegisterRst
+{
+	int32 m_rst = 1;			//是否成功 0成功
+}
+
+message CS_LoginGateWay {
+	string m_sessionid = 1;	//回话id
+}
+//登陆网关服务器结果
+message SC_LoginGateWayRst
+{
+	int32 m_rst = 1;		//是否成功 0成功 1账号为空 2会话无效
+	uint32 m_playerid = 2;		//玩家id,用于创建玩家的基础数据，暂时协议。
+}
+message SC_PlayerInfo
+{
+	uint32 m_playerid = 1;		//玩家id
+	string m_nickname = 2;		//
+	uint64 m_money = 3;
+}

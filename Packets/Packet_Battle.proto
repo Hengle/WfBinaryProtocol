@@ -1,0 +1,89 @@
+syntax = "proto3";
+package rpc;
+
+enum emPacket_Battle
+{
+	em_Battle_Begin				= 0x0F00;	//战斗消息开始
+	em_SC_PreBattle 			= 0x0F01;	//准备战斗，放里面所有玩家都已经准备好，此时客户端开始加载场景
+	em_CS_LoadSceneOk 			= 0x0F02;	//资源加载完成进入房间 （告诉服务器客户端准备好了，服务器可以刷其他玩家了）
+	em_SC_PrepareOk 			= 0x0F03;	//
+	em_SC_StartBattle 			= 0x0F04;	//开始战斗，显示场景界面，开始帧计数	
+	em_CS_InputEvent 			= 0x0F05;   //广播客户端输入事件
+	em_SC_Fps 					= 0x0F06;   //广播客户端输入事件
+	
+	em_Battle_End				= 0x0FFF;	//战斗消息结束
+}
+
+message t_PreparePlayerData
+{
+	uint32 m_playerid = 1;		//玩家id
+	string m_name = 2;		//玩家别名
+	uint32 m_jobid = 3;     //玩家控制的实体模型表数据t_jobbean
+}
+message SC_PreBattle 
+{
+	list<t_PreparePlayerData> datas = 1;
+}
+message SC_PrepareOk 
+{
+	list<t_PreparePlayerData> datas = 1;
+}
+
+message CS_LoadSceneOk
+{
+	uint32 m_RoomId = 1; //房间id
+}	
+	
+/////////////////////帧同步消息（此消息服务端不使用，只用于消息转发，客户端可以自行修改）/////////////////////
+enum emInputEvent
+{
+	emInputEvent_Move				= 0x0;	//
+	emInputEvent_MovePath			= 0x1;	//
+	emInputEvent_StopMove			= 0x2;	//
+	emInputEvent_SelObj				= 0x3;	//
+	emInputEvent_CreateObj			= 0x4;	//
+	emInputEvent_UseSkill			= 0x5;	//
+}
+//移动消息
+message Packet_Move
+{
+	int32 m_ObjId=1; //实体id
+	int32  m_x =2; //移动的x
+	int32  m_z =3; //移动的z
+}
+//path移动消息
+message Packet_MovePath 
+{
+	int32 m_ObjId = 1; //实体id
+	int32 m_curx =2; //当前x坐标
+	int32 m_curz =3; //当前z坐标
+	list<int32> m_xlist=4; //x坐标
+	list<int32> m_zlist=5; //z坐标
+}
+
+//请求停止移动
+message Packet_StopMove 
+{
+	int32 m_ObjId=1; //实体id
+}
+//选择实体
+message Packet_SelObj
+{
+	int32 m_PlayerId=1; //玩家id
+	int32 m_ObjId=2; //实体id
+}
+//创建实体
+message Packet_CreateObj
+{
+	int32 m_TemplateId=1; //模板id
+	int32 m_ObjectType =2; //实体类型
+	int32 m_EntityId =3; //实体id
+}
+message Packet_UseSkill
+{
+	int32 m_ObjId=1; //实体id
+	uint32 m_SkillId=2; //技能模板Id
+	int32 m_x=3; //技能释放点x
+	int32 m_y =4; //技能释放点y
+	int32 m_TargetId=5; //目标id
+}
