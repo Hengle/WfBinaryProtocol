@@ -1,33 +1,66 @@
 package Test;
 
+import java.io.Console;
+import java.util.ArrayList;
+
+import org.omg.CORBA.UShortSeqHelper;
+
 import io.netty.buffer.ByteBuf;  
 import io.netty.channel.ChannelHandlerContext;  
-import io.netty.channel.ChannelInboundHandlerAdapter;  
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import message.Packet_Battle.Packet_StopMove;
+import message.Packet_Battle.t_PreparePlayerData;  
   
-public class SimpleServerHandler extends ChannelInboundHandlerAdapter {  
+public class SimpleServerHandler extends ChannelInboundHandlerAdapter 
+{  
   
     @Override  
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {  
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception 
+    {  
         System.out.println("SimpleServerHandler.channelRead");  
-        ByteBuf result = (ByteBuf) msg;  
-        byte[] result1 = new byte[result.readableBytes()];  
-        // msg中存储的是ByteBuf类型的数据，把数据读取到byte[]中  
-        result.readBytes(result1);  
-        String resultStr = new String(result1);  
-        // 接收并打印客户端的信息  
-        System.out.println("Client said:" + resultStr);  
+        ByteBuf buffer = (ByteBuf) msg;  
+        //读取消息头信息
+        int length = buffer.readShort();
+        int msgType = buffer.readUnsignedShort();
+        long serverFlag =  buffer.readUnsignedInt();
+        
+        if (message.Packet_Battle.StructEnum.getStructEnum(msgType) != null) 
+        {
+			ReqStopMove(buffer);
+		} 
         // 释放资源，这行很关键  
-        result.release();  
+        buffer.release();  
   
-        // 向客户端发送消息  
-        String response = "hello client!";  
-        // 在当前场景下，发送的数据必须转换成ByteBuf数组  
-        ByteBuf encoded = ctx.alloc().buffer(4 * response.length());  
-        encoded.writeBytes(response.getBytes());  
-        ctx.write(encoded);  
-        ctx.flush();  
+        ResPreBattle(ctx);
     }  
   
+    //响应客户端发送的移动消息
+    private void ReqStopMove(ByteBuf buf)
+    {
+    	Packet_StopMove msg = Packet_StopMove.readBy(buf);
+    	int objId = msg.m_ObjId;
+    	System.out.println("Receve ReqStopMove:---->>>>" +"ObjId:"+objId);   
+	}
+    //向客户端发送指令
+    private void ResPreBattle(ChannelHandlerContext ctx) 
+    {
+    	//填充一个数据
+    	ArrayList<t_PreparePlayerData> datas = new ArrayList<>();
+    	for(int i=0;i<3;++i)
+    	{
+    		t_PreparePlayerData playerData = new t_PreparePlayerData();
+    		playerData.m_jobid = 0;
+    		playerData.m_playerid = i;
+    		playerData.m_name = "player" + i;
+    		datas.add(playerData);
+    	}
+    	message.Packet_Battle.SC_PreBattle msg = new  message.Packet_Battle.SC_PreBattle();
+    	msg.datas = datas;
+    	msg.write(ctx);
+    	msg.Flush();
+    	System.out.println("Send ResPreBattle:"); 	
+	}
+    
     @Override  
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {  
         // 当出现异常就关闭连接  

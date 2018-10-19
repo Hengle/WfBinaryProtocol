@@ -2,10 +2,13 @@ package message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelHandlerContext;
 
 public class BinaryMessage 
 {
 	private ByteBuf m_ByteBuf;
+	private ChannelHandlerContext m_Context;
+	
 	public int getMsgId()
 	{
 	    return 0;
@@ -16,11 +19,21 @@ public class BinaryMessage
 		m_ByteBuf = buffer;
 		read();
 	}
+	public void write(ChannelHandlerContext ctx)
+	{
+		m_Context = ctx;
+		m_ByteBuf = m_Context.alloc().buffer(1024*20);
+		write();
+	}
 	
+	public void Flush() 
+	{
+		m_Context.write(m_ByteBuf);
+		m_Context.flush();
+	}
 	protected void write()
 	{
-		PooledByteBufAllocator allocator = new PooledByteBufAllocator(false);
-        m_ByteBuf = allocator.heapBuffer(15);
+
 	}
 	
 	protected void writeShort(short data)
