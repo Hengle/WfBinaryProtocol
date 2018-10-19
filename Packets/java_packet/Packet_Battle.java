@@ -59,7 +59,7 @@ protected void write(){
 
 		int _TempSize = 0;
 						_TempSize = datas.size();
-						writeShort( _TempSize );
+						writeInt( _TempSize );
 						for(t_PreparePlayerData _var : datas)
 						{
 							_var.write();
@@ -70,7 +70,7 @@ protected void write(){
 protected void read(){
 
 		int _TempSize = 0;
-						_TempSize =  readShort();
+						_TempSize =  readInt();
 						for( int i =0;i< _TempSize;++i)
 						{
 							t_PreparePlayerData _var = new t_PreparePlayerData(); 
@@ -103,7 +103,7 @@ protected void write(){
 
 		int _TempSize = 0;
 						_TempSize = datas.size();
-						writeShort( _TempSize );
+						writeInt( _TempSize );
 						for(t_PreparePlayerData _var : datas)
 						{
 							_var.write();
@@ -114,7 +114,7 @@ protected void write(){
 protected void read(){
 
 		int _TempSize = 0;
-						_TempSize =  readShort();
+						_TempSize =  readInt();
 						for( int i =0;i< _TempSize;++i)
 						{
 							t_PreparePlayerData _var = new t_PreparePlayerData(); 
@@ -212,14 +212,14 @@ protected void write(){
 		writeInt( m_curz);
 		int _TempSize = 0;
 						_TempSize = m_xlist.size();
-						writeShort( _TempSize );
+						writeInt( _TempSize );
 						for(int _var : m_xlist)
 						{
 							writeInt(_var);
 						}
 				
 						_TempSize = m_zlist.size();
-						writeShort( _TempSize );
+						writeInt( _TempSize );
 						for(int _var : m_zlist)
 						{
 							writeInt(_var);
@@ -233,14 +233,14 @@ protected void read(){
 		 m_curx = readInt();
 		 m_curz = readInt();
 		int _TempSize = 0;
-						_TempSize =  readShort();
+						_TempSize =  readInt();
 						for( int i =0;i< _TempSize;++i)
 						{
 							int _var = readInt();
 							m_xlist.add(_var);
 						}
 				
-						_TempSize =  readShort();
+						_TempSize =  readInt();
 						for( int i =0;i< _TempSize;++i)
 						{
 							int _var = readInt();

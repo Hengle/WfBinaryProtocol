@@ -412,7 +412,7 @@ function createPacket_JAVA( filename, enum, message)
 				_Serialize = _Serialize.."\n"..string.format(
 				[[
 						_TempSize = %s.size();
-						writeShort( _TempSize );
+						writeInt( _TempSize );
 						for(%s _var : %s)
 						{
 							%s
@@ -421,7 +421,7 @@ function createPacket_JAVA( filename, enum, message)
 				--∑¥–Ú¡–ªØ
 				_DeSerialize = _DeSerialize.."\n"..string.format(
 				[[
-						_TempSize =  readShort();
+						_TempSize =  readInt();
 						for( int i =0;i< _TempSize;++i)
 						{
 							%s
