@@ -51,9 +51,11 @@ public class SimpleServer
                 .childOption(ChannelOption.SO_KEEPALIVE, true);   
   
             // 绑定端口，开始接收进来的连接  
-            ChannelFuture f = b.bind(port).sync();  
+            ChannelFuture f = b.bind(port).sync();
+            System.out.print("监听启动了 IP:127.0.0.1 Port:" + port);
             // 等待服务器 socket 关闭 。  
             f.channel().closeFuture().sync();  
+
         } 
         finally
         {  
