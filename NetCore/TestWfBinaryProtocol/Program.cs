@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Threading;
-
-namespace TestWfBinaryProtocol
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using GameServer;
+namespace GameServer
 {
     class Program
     {
+        public static MainLoop m_MainLoop = new MainLoop();
         static void Main(string[] args)
         {
-            Test app = new Test();
-            app.Start();
-            while(true)
+            m_MainLoop.Start();
+            while (!m_MainLoop.m_StopServer)
             {
-                bool run = app.Update();
-                if(run == false )
-                {
-                    break;
-                }
-                Thread.Sleep(1000);
+                m_MainLoop.Update();
             }
-
-            app.OnDestroy();
+            m_MainLoop.Stop();
+            m_MainLoop = null;
         }
     }
 }

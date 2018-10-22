@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 //封包解包类
-public class ISerializePacket:PooledClassObject
+public class ISerializePacket : PooledClassObject
 {
 
     public ISerializePacket()
